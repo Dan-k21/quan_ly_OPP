@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản Lý</title>
+</head>
+<body>
+<center>
+    <div id="form"></div>
+    <h1>My Store</h1>
+    <button onclick="showFormAdd()">Add</button>
+    <table border="0.5" style="border: 1px solid; margin-top: 10px">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Action</th>
+        </tr>
+        <tbody id="products"></tbody>
+    </table>
+</center>
+<script>
+    class Product {
+        id;
+        name;
+        quantity;
+        price;
+
+        constructor(id, name, quantity, price) {
+            this.id = id
+            this.name = name
+            this.quantity = quantity
+            this.price = price
+        }
+
+        getId() {
+            return this.id
+        }
+
+        setId(id) {
+            this.id = id
+        }
+
+        getName() {
+            return this.name
+        }
+
+        setName(name) {
+            this.name = name
+        }
+
+        getQuantity() {
+            return this.quantity
+        }
+
+        setQuantity(quantity) {
+            this.quantity = quantity
+        }
+
+        getPrice() {
+            return this.price
+        }
+
+        setPrice(price) {
+            this.price = price
+        }
+    }
+
+    class Store {
+        listProduct;
+
+        constructor() {
+            this.listProduct = []
+        }
+
+        add(newProduct) {
+            this.listProduct.push(newProduct)
+        }
+
+        findAll() {
+            return this.listProduct
+        }
+
+        remove(index) {
+            this.listProduct.splice(index, 1)
+        }
+    }
+
+    let store = new Store()
+    let productInStore = store.findAll()
+
+    function showAll() {
+        let str = ''
+        for (let i = 0; i < productInStore.length; i++) {
+            str += `
+            <tr>
+                <td>${productInStore[i].getId()}</td>
+                <td>${productInStore[i].getName()}</td>
+                <td>${productInStore[i].getQuantity()}</td>
+                <td>${productInStore[i].getPrice()}</td>
+                <td><button onclick="showFormEdit(${i})">Edit</button></td>
+                <td><button onclick="remove(${i})">Remove</button></td>
+            </tr>
+            `
+        }
+        document.getElementById('products').innerHTML = str
+    }
+
+    showAll()
+
+    function showFormAdd() {
+        document.getElementById('form').innerHTML = `
+        <center>
+            <table border="0.5" style="border: 1px solid">
+                <tr>
+                    <td>ID:</td>
+                    <td><input type="number" id="id1"></td>
+                </tr>
+                <tr>
+                    <td>Name:</td>
+                    <td><input type="text" id="name1"></td>
+                </tr>
+                <tr>
+                    <td>Quantity:</td>
+                    <td><input type="number" id="quantity1"></td>
+                </tr>
+                <tr>
+                    <td>Price:</td>
+                    <td><input type="number" id="price1"></td>
+                </tr>
+                <tr>
+                    <td><button onclick="add()">Add</button></td>
+                </tr>
+            </table>
+        </center>
+        `
+    }
+
+    function add() {
+        let id = document.getElementById('id1').value;
+        let name = document.getElementById('name1').value;
+        let quantity = document.getElementById('quantity1').value;
+        let price = document.getElementById('price1').value;
+        let newProduct = new Product(id, name, quantity, price);
+        store.add(newProduct)
+        showAll()
+    }
+
+    function remove(index) {
+        let isConfirm = confirm('Bạn có muốn xóa không ?')
+        if (isConfirm) {
+            store.remove(index)
+            showAll()
+        }
+    }
+
+    function showFormEdit(index) {
+        document.getElementById('form').innerHTML = `
+        <center>
+            <table>
+                <tr>
+                    <td>ID:</td>
+                    <td><input type="number" value="${productInStore[index].id}" id="id2"></td>
+                </tr>
+                <tr>
+                    <td>Name:</td>
+                    <td><input type="text" value="${productInStore[index].name}" id="name2"></td>
+                </tr>
+                <tr>
+                    <td>Quantity:</td>
+                    <td><input type="number" value="${productInStore[index].quantity}" id="quantity2"></td>
+                </tr>
+                <tr>
+                    <td>Price:</td>
+                    <td><input type="number" value="${productInStore[index].price}" id="price2"></td>
+                </tr>
+                <tr>
+                    <td><button onclick="edit(${index})">Save</button></td>
+                </tr>
+            </table>
+        </center>
+        `
+    }
+
+    function edit(index) {
+        let id = +document.getElementById('id2').value;
+        let name = document.getElementById('name2').value;
+        let quantity = +document.getElementById('quantity2').value;
+        let price = +document.getElementById('price2').value;
+        let editProduct = new Product(id, name, quantity, price);
+        productInStore[index].id = id;
+        productInStore[index].name = name;
+        productInStore[index].quantity = quantity;
+        productInStore[index].price = price;
+        showAll()
+        document.getElementById('form').innerHTML = ''
+    }
+</script>
+</body>
+</html>
